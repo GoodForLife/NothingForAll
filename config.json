@@ -1,0 +1,21 @@
+{
+    "telegram_bot_token": "Apikamu",
+    "allowed_users": "useryangsiperbolehkan_1,useryangsiperbolehkan_2",
+    "download_paths": {
+        "aria": "path untuk hasil download sebagai default",
+        "gdown": "path untuk hasil download sebagai default",
+        "pytube": "path untuk hasil download sebagai default"
+    },
+    "vnstat": {
+        "folder": "/www/vnstati/",
+        "images": {
+            "5_minute": "br-lan_vnstat_5.png",
+            "hours": "br-lan_vnstat_h.png",
+            "hours_graph": "br-lan_vnstat_s.png",
+            "days": "br-lan_vnstat_d.png",
+            "months": "br-lan_vnstat_m.png",
+            "years": "br-lan_vnstat_y.png",
+            "top_days": "br-lan_vnstat_t.png"
+        }
+    }
+}

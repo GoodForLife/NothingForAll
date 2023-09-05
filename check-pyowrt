@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Cek Apakah runnerowrt.sh Sudah Running
+if pgrep -f run-pyowrt > /dev/null; then
+    logger "Python Telegram Bot Sudah Running Di background."
+else
+    # Kalau Belum, Akan Menjalankan Ke Backgrund
+    /etc/pyowrt/run-pyowrt > /dev/null 2>&1 &
+    logger "Memulai runnerowrt.sh Di background."
+fi
