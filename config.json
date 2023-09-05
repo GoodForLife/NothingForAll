@@ -1,6 +1,7 @@
 {
     "telegram_bot_token": "Apikamu",
     "allowed_users": "useryangsiperbolehkan_1,useryangsiperbolehkan_2",
+    "run": False,
     "download_paths": {
         "aria": "path untuk hasil download sebagai default",
         "gdown": "path untuk hasil download sebagai default",
