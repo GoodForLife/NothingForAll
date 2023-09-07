@@ -1,0 +1,77 @@
+#!/bin/bash
+
+APP_PATH="/etc/pyowrt/main.py"
+PID_FILE="/var/run/pyowrt.pid"
+
+start() {
+    if [ -f "$PID_FILE" ]; then
+        echo "Aplikasi sudah berjalan."
+    else
+        echo "Memulai aplikasi..."
+        python "$APP_PATH" &
+        echo $! > "$PID_FILE"
+        echo "Aplikasi telah dimulai."
+    fi
+}
+
+stop() {
+    if [ -f "$PID_FILE" ]; then
+        echo "Menghentikan aplikasi..."
+        PID=$(cat "$PID_FILE")
+        kill "$PID"
+        rm -f "$PID_FILE"
+        echo "Aplikasi telah dihentikan."
+    else
+        echo "Aplikasi tidak sedang berjalan."
+    fi
+}
+
+reload() {
+    if [ -f "$PID_FILE" ]; then
+        echo "Menghentikan aplikasi..."
+        PID=$(cat "$PID_FILE")
+        kill "$PID"
+        rm -f "$PID_FILE"
+        echo "Aplikasi telah dihentikan."
+        echo "Memulai aplikasi..."
+        python "$APP_PATH" &
+        echo $! > "$PID_FILE"
+    else
+        echo "Aplikasi tidak berjalan."
+        echo "Memulai Ulang aplikasi..."
+        python "$APP_PATH" &
+        echo $! > "$PID_FILE"
+    fi
+}
+
+check_status() {
+    if [ -f "$PID_FILE" ]; then
+        echo "Aplikasi berjalan dengan PID $(cat $PID_FILE)."
+    else
+        echo "Aplikasi tidak berjalan."
+      #  python "$APP_PATH" &
+      #  echo $! > "$PID_FILE"
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    reload)
+        reload
+        ;;
+    status)
+        check_status
+        ;;
+    *)
+        echo "Penggunaan: $0 {start|stop|reload|status}"
+        exit 1
+        ;;
+esac
+
+exit 0
+
