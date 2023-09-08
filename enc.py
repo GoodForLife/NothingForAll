@@ -12,7 +12,7 @@ def encode_python_file(file_path, output_path):
     encoded_code = base64.b64encode(compressed_code).decode("utf-8")
 
     with open(output_path, "w") as output_file:
-        output_file.write(f"import marshal\nimport zlib\nimport base64\nexec(marshal.loads(zlib.decompress(base64.b64decode({repr(encoded_code)}))));")
+        output_file.write(f"#Delevop By IamJambal\n#Ngapain Bang?\n\n\nimport marshal\nimport zlib\nimport base64\nexec(marshal.loads(zlib.decompress(base64.b64decode({repr(encoded_code)}))));")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
