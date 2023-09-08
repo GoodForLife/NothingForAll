@@ -1,5 +1,5 @@
 #!/bin/bash
-pid_command=$(ps | grep 'python /root/py2fabot/main.py' | grep -v grep | awk '{print $1}')
+pid_command=$(ps | grep 'python /etc/pyowrt/main.py' | grep -v grep | awk '{print $1}')
 
 
 start_service() {
@@ -7,7 +7,7 @@ start_service() {
         echo "pyowrt Sudah Berjalan. PID : $pid_command"
     else
         echo "Menjalankan pyowrt."
-        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        python /etc/pyowrt/main.py > /dev/null 2>&1 &
         echo "Berhasil Menjalankan pyowrt."
     fi
 }
@@ -22,11 +22,11 @@ reload_service(){
     if [ -n "$pid_command" ]; then
         echo "menstop pyowrt."
         kill "$pid_command"
-        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        python /etc/pyowrt/main.py > /dev/null 2>&1 &
         echo "Berhasil Mereload Menjalankan pyowrt."
     else
         echo "pyowrt tidak berjalan."
-        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        python /etc/pyowrt/main.py > /dev/null 2>&1 &
         echo "Berhasil Menjalankan Kembali pyowrt."
     fi
 }
@@ -35,7 +35,7 @@ autorun_service(){
         echo "pyowrt Sudah Berjalan. PID : $pid_command"
     else
         echo "Menjalankan pyowrt."
-        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        python /etc/pyowrt/main.py > /dev/null 2>&1 &
         echo "Berhasil Menjalankan pyowrt."
     fi
 }
