@@ -1,68 +1,61 @@
 #!/bin/bash
+pid_command=$(ps | grep 'python /root/py2fabot/main.py' | grep -v grep | awk '{print $1}')
 
-APP_NAME="/etc/pyowrt/main.py"
-PID_FILE="/var/run/pyowrt.pid"
 
-start() {
-    if [ -f $PID_FILE ]; then
-        echo "pyowrt sudah berjalan dengan PID $(cat $PID_FILE)"
+start_service() {
+    if [ -n "$pid_command" ]; then
+        echo "pyowrt Sudah Berjalan. PID : $pid_command"
     else
-        echo "Memulai pyowrt..."
-        python $APP_NAME > /dev/null &
-        echo $! > $PID_FILE
-        echo "pyowrt telah dimulai dengan PID $!"
+        echo "Menjalankan pyowrt."
+        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        echo "Berhasil Menjalankan pyowrt."
+    fi
+}
+stop_service() {
+    if [ -n "$pid_command" ]; then
+        kill "$pid_command"
+    else
+        echo "pyowrt tidak berjalan."
+    fi
+}
+reload_service(){
+    if [ -n "$pid_command" ]; then
+        echo "menstop pyowrt."
+        kill "$pid_command"
+        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        echo "Berhasil Mereload Menjalankan pyowrt."
+    else
+        echo "pyowrt tidak berjalan."
+        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        echo "Berhasil Menjalankan Kembali pyowrt."
+    fi
+}
+autorun_service(){
+    if [ -n "$pid_command" ]; then
+        echo "pyowrt Sudah Berjalan. PID : $pid_command"
+    else
+        echo "Menjalankan pyowrt."
+        python /root/py2fabot/main.py > /dev/null 2>&1 &
+        echo "Berhasil Menjalankan pyowrt."
     fi
 }
 
-stop() {
-    if [ -f $PID_FILE ]; then
-        PID=$(cat $PID_FILE)
-        echo "Menghentikan pyowrt dengan PID $PID..."
-        kill $PID
-        rm $PID_FILE
-        echo "pyowrt telah dihentikan."
-    else
-        echo "pyowrt tidak sedang berjalan."
-    fi
-}
-
-cek() {
-    if [ -f $PID_FILE ]; then
-        PID=$(cat $PID_FILE)
-        echo "pyowrt sudah berjalan dengan PID $PID..."
-    else
-        echo "pyowrt tidak sedang berjalan."
-    fi
-}
-
-autorun() {
-    if pgrep -f /etc/pyowrt/main.py > /dev/null; then
-        echo "pyowrt Sudah Berjalan."
-        logger "pyowrt Sudah Berjalan."
-    else
-        rm $PID_FILE
-        python $APP_NAME > /dev/null &
-        echo $! > $PID_FILE
-        echo "Memulai pyowrt Di background."
-        logger "Memulai pyowrt Di background."
-    fi
-}
-
+# Memeriksa argumen yang diberikan
 case "$1" in
-    start)
-        start
+    "start")
+        start_service
         ;;
-    stop)
-        stop
+    "stop")
+        stop_service
         ;;
-    cek)
-        cek
+    "reload")
+        reload_service
         ;;
-    auto)
-        autorun
+    "autorun")
+        autorun_service
         ;;
     *)
-        echo "Usage: $0 {start|stop|cek}"
+        echo "Pilihan yang tersedia: start, stop, reload, autorun"
         exit 1
         ;;
 esac
