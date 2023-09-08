@@ -1,56 +1,50 @@
 #!/bin/bash
 
-APP_PATH="/etc/pyowrt/main.py"
+APP_NAME="/etc/pyowrt/main.py"
 PID_FILE="/var/run/pyowrt.pid"
 
 start() {
-    if [ -f "$PID_FILE" ]; then
-        echo "Aplikasi sudah berjalan."
+    if [ -f $PID_FILE ]; then
+        echo "pyowrt sudah berjalan dengan PID $(cat $PID_FILE)"
     else
-        echo "Memulai aplikasi..."
-        python "$APP_PATH" &
-        echo $! > "$PID_FILE"
-        echo "Aplikasi telah dimulai."
+        echo "Memulai pyowrt..."
+        python $APP_NAME > /dev/null &
+        echo $! > $PID_FILE
+        echo "pyowrt telah dimulai dengan PID $!"
     fi
 }
 
 stop() {
-    if [ -f "$PID_FILE" ]; then
-        echo "Menghentikan aplikasi..."
-        PID=$(cat "$PID_FILE")
-        kill "$PID"
-        rm -f "$PID_FILE"
-        echo "Aplikasi telah dihentikan."
+    if [ -f $PID_FILE ]; then
+        PID=$(cat $PID_FILE)
+        echo "Menghentikan pyowrt dengan PID $PID..."
+        kill $PID
+        rm $PID_FILE
+        echo "pyowrt telah dihentikan."
     else
-        echo "Aplikasi tidak sedang berjalan."
+        echo "pyowrt tidak sedang berjalan."
     fi
 }
 
-reload() {
-    if [ -f "$PID_FILE" ]; then
-        echo "Menghentikan aplikasi..."
-        PID=$(cat "$PID_FILE")
-        kill "$PID"
-        rm -f "$PID_FILE"
-        echo "Aplikasi telah dihentikan."
-        echo "Memulai aplikasi..."
-        python "$APP_PATH" &
-        echo $! > "$PID_FILE"
+cek() {
+    if [ -f $PID_FILE ]; then
+        PID=$(cat $PID_FILE)
+        echo "pyowrt sudah berjalan dengan PID $PID..."
     else
-        echo "Aplikasi tidak berjalan."
-        echo "Memulai Ulang aplikasi..."
-        python "$APP_PATH" &
-        echo $! > "$PID_FILE"
+        echo "pyowrt tidak sedang berjalan."
     fi
 }
 
-check_status() {
-    if [ -f "$PID_FILE" ]; then
-        echo "Aplikasi berjalan dengan PID $(cat $PID_FILE)."
+autorun() {
+    if pgrep -f /etc/pyowrt/main.py > /dev/null; then
+        echo "pyowrt Sudah Berjalan."
+        logger "pyowrt Sudah Berjalan."
     else
-        echo "Aplikasi tidak berjalan."
-      #  python "$APP_PATH" &
-      #  echo $! > "$PID_FILE"
+        rm $PID_FILE
+        python $APP_NAME > /dev/null &
+        echo $! > $PID_FILE
+        echo "Memulai pyowrt Di background."
+        logger "Memulai pyowrt Di background."
     fi
 }
 
@@ -61,17 +55,16 @@ case "$1" in
     stop)
         stop
         ;;
-    reload)
-        reload
+    cek)
+        cek
         ;;
-    status)
-        check_status
+    auto)
+        autorun
         ;;
     *)
-        echo "Penggunaan: $0 {start|stop|reload|status}"
+        echo "Usage: $0 {start|stop|cek}"
         exit 1
         ;;
 esac
 
 exit 0
-
