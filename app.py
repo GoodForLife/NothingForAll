@@ -1,3 +1,4 @@
+## DARI GITHUB
 import requests, subprocess
 LOCAL_VERSION = "1.1"
 VERSION_URL = "https://raw.githubusercontent.com/mxvwrt/pyowrt/main/version"
