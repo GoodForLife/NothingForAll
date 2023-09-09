@@ -46,3 +46,4 @@ def update_app():
             print("Anda sudah menggunakan versi yang terbaru.")
     else:
         print("Tidak dapat mengambil versi online. Update dibatalkan.")
+update_app()
